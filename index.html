@@ -749,7 +749,7 @@ function spawn(boss,tier,chaser){
  if(cur.t==='rose'){E.name='Shadow of '+pick(['a Fallen Knight','a Lost Mage','a Pale Duelist']);E.g='wraith';E.art=0;E.max=Math.round(E.max*1.5);E.atk=Math.round(E.atk*1.3);E.elite=1}
  if(has('frenzy'))E.atk=Math.round(E.atk*1.3);
  if(has('fort'))E.max=Math.round(E.max*1.35);
- if(f<20){const z=1-f/20;E.max=Math.round(E.max*(1-.12*z));E.atk=Math.max(1,Math.round(E.atk*(1-.1*z)))}
+ if(f<=20){const z=Math.min(1,1.05-f/20);E.max=Math.round(E.max*(1-.26*z));E.atk=Math.max(1,Math.round(E.atk*(1-.2*z)))}
  E.hp=E.max;E.def=Math.floor(f/4)+(boss?2:0);E.race=pick(Object.keys(RACES));E.cls=pick(Object.keys(CLASSES));
  if(mimic){E.name='Mimic Chest';E.mimic=1;E.g='chest';E.art='mimic';E.fl='';mimic=0}
  if(pkDuel){E.name='The Pale Knight';E.pk=pkDuel;E.race='human';E.cls='knight';E.g='skull';E.art='pk';E.fl='';pkDuel=0}
@@ -760,7 +760,7 @@ function spawn(boss,tier,chaser){
   for(let i=0;i<nA;i++){const a=pool.splice(Math.floor(Math.random()*pool.length),1)[0];E.aff.push(a)}
   if(E.aff.includes('ironhide'))E.taken=(E.taken||1)*.8;
  }
- {const ak=E.art;let pc=0;if(bi2===5)pc+=.28;if(['weaver','mantis','crawler','rat'].includes(ak))pc+=.18;if(E.aff&&E.aff.includes('venom'))pc+=.35;if(chaser&&bi===5)pc+=.2;E.pc=Math.min(.6,pc)}
+ {const ak=E.art;let pc=0;if(bi2===5)pc+=.28;if(['weaver','mantis','crawler','rat'].includes(ak))pc+=.18;if(E.aff&&E.aff.includes('venom'))pc+=.35;if(chaser&&bi===5)pc+=.2;E.pc=Math.min(.6,pc);if(f<=20)E.pc*=1-.5*Math.min(1,1.05-f/20)}
  if(S.sick>0){E.sick=1;S.sick--}if(S.crit3>0){E.fc=1;S.crit3--}if(S.hex){E.hex=1;S.hex=0}
  Mus.play(boss||chaser?'boss':'battle');phase='combat';
  log(chaser?'The thing that has hunted you finds you. '+E.name+' is here.':boss?'The gate shatters. '+E.name+' rises, crowned in ash.':'A '+E.name+' drifts from the dark.', boss||chaser?'dmg':'story');
