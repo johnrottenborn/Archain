@@ -51,7 +51,7 @@ button.pass{min-height:44px;border-color:rgba(184,154,90,.45)}
 .hbtns{display:flex;gap:10px}.hbtns button{width:160px}
 #howto{position:absolute;inset:0;background:#05060c;display:none;flex-direction:column;gap:10px;padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));z-index:10;overflow:hidden}
 #howto h1{font-family:var(--goth);font-size:28px;font-weight:600;color:var(--gold2);margin:0;text-align:center;letter-spacing:.06em}
-#howto .hw{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.38;color:var(--text)}
+#howto .hw{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.34;color:var(--text)}
 #howto .hw p{margin:0}#howto .hw b{color:var(--gold2);font-weight:600}
 #howto button{align-self:center;width:200px}
 #stages .howbtn{margin-top:auto;min-height:48px;width:100%;background:rgba(255,255,255,.6);border-color:#1a1626;color:#1a1626}
@@ -263,6 +263,9 @@ const RACES={
  demon:{n:'Demon',beats:'angel',res:'Burn'}
 };
 const NAMES={human:['Wanda','Marek','Isolde','Corin','Maren','Aldric'],elf:['Aelindra','Thalion','Sylwen','Eryndor','Liriel','Caelum'],dwarf:['Borga','Durnik','Thrain','Helga','Kragan','Brunna'],beast:['Fang','Rukka','Ashmane','Skarn','Tuuli','Grim'],angel:['Seraphiel','Iriel','Orael','Uriela','Zadkiel','Auriel'],demon:['Malachar','Vexira','Zareth','Nyx','Azmodan','Lilith']};
+const BEATS={fighter:'priest',priest:'wizard',wizard:'ranger',ranger:'fighter'},WCOL={fighter:'#e0526b',priest:'#e6c84a',wizard:'#9a7ae0',ranger:'#5fb36a'};
+function aff(a,b){if(!BEATS[a]||!BEATS[b]||a===b)return 0;return BEATS[a]===b?1:BEATS[b]===a?-1:0}
+function affE(c){return(E.boss||E.chaser||E.pk)?0:aff(c,E.cls)}
 const CLASSES={
  fighter:{n:'Fighter',g:'sword',auto:{n:'Slash',t:[['str',1]]},st:'str',weak:'wizard',hp:58,arm:2,stats:{str:8,int:3,dex:5},r:'A steady bruiser who guards well.',b:{spd:25,vig:50},sk:[
   {n:'Bulwark Cleave',ap:1,d:'110% STR. Chips 25 Poise.',t:[['str',1.1]],pz:25},
@@ -322,7 +325,7 @@ function showCreate(){
   $('cp').innerHTML=pic($('cr').value,$('cc').value);$('cp').classList.toggle('hasimg',!!PORT[$('cr').value+'_'+$('cc').value]);
   $('cd').innerHTML='<div class="st"><span>HP '+C.hp+'</span><span>AC '+C.arm+'</span><span>STR '+f(T.str*(rl==='necklace'?1.1:1))+'</span><span>INT '+T.int+'</span><span>DEX '+T.dex+'</span></div>'+
    '<p><b>'+R.n+'.</b> +10% damage against '+RACES[R.beats].n+'s. 50% protection from '+R.res+'.</p>'+
-   '<p><b>'+C.n+'.</b> '+C.r+' Fights on its own; spend AP on skills. +25% on '+C.st.toUpperCase()+' skills. \u221210% defense against '+CLASSES[C.weak].n+'s.</p>'+
+   '<p><b>'+C.n+'.</b> '+C.r+' Fights on its own; spend AP on skills. +25% on '+C.st.toUpperCase()+' skills. '+(BEATS[$('cc').value]?'Strong against '+CLASSES[BEATS[$('cc').value]].n+'s, weak against '+CLASSES[Object.keys(BEATS).find(k=>BEATS[k]===$('cc').value)].n+'s.':'Outside the color wheel.')+'</p>'+
    (rl?'<p><b>'+RELICS[rl].n+'.</b> '+RELICS[rl].d+'</p>':'')+
    skl($('cc').value).map(s=>'<p><b>'+s.n+'</b> \u00b7 '+s.ap+' AP \u00b7 '+s.d+'</p>').join('');
  };
@@ -759,7 +762,7 @@ function spawn(boss,tier,chaser){
  if(has('frenzy'))E.atk=Math.round(E.atk*1.3);
  if(has('fort'))E.max=Math.round(E.max*1.35);
  if(f<=20){const z=Math.min(1,1.05-f/20);E.max=Math.round(E.max*(1-.26*z));E.atk=Math.max(1,Math.round(E.atk*(1-.2*z)))}
- E.hp=E.max;E.def=Math.floor(f/4)+(boss?2:0);E.race=pick(Object.keys(RACES));E.cls=pick(Object.keys(CLASSES));
+ E.hp=E.max;E.def=Math.floor(f/4)+(boss?2:0);E.race=pick(Object.keys(RACES));E.cls=pick(['fighter','priest','wizard','ranger']);
  if(mimic){E.name='Mimic Chest';E.mimic=1;E.g='chest';E.art='mimic';E.fl='';mimic=0}
  if(pkDuel){E.name='The Pale Knight';E.pk=pkDuel;E.race='human';E.cls='knight';E.g='skull';E.art='pk';E.fl='';pkDuel=0}
  if(!boss&&!chaser&&!E.mimic&&!E.pk&&cur.t!=='rose'&&(snailNext||Math.random()<.007)){snailNext=0;E.name='Jewel Snail';E.snail=1;E.flee=22;E.art=pick(['snail','snail2','snail3']);E.fl='';E.g='eye';E.tier=0;E.max=Math.round(E.max*.9);E.atk=Math.round(E.atk*.5);E.def+=3;E.race='human'}
@@ -892,7 +895,7 @@ function rkBuild(){
  const U=RB.units;
  root.innerHTML='<div class="rk-hd"><span>FLOOR '+S.floor+'</span><span><button class="rkb rkpp" id="rkpa" aria-label="Pause">'+PAUSE_I+'</button><button class="rkb" id="rkgear">⚙</button></span></div>'+
  '<div class="rk-en" id="rken"><div class="rk-tel" id="rktel"></div><div class="rk-art" id="rkart"><i class="rk-ring" id="rkring"></i>'+(E.art?'<img alt="" style="max-width:200px;max-height:170px;width:auto;height:auto;margin:-18px 0;object-fit:contain;border:0;filter:'+((E.fl||'')+' '+TIERFX[E.tier||0]).trim()+'" src="'+BART[E.art]+'">':E.boss?ico('boss'):svg(E.g))+'</div>'+
- '<div class="rk-ename" style="margin-top:22px">'+E.name+'</div><div class="rk-esub" style="margin-top:-3px;margin-bottom:2px">Level '+E.lv+(E.boss?' · Guardian of the floor':E.chaser?' · The Chaser':'')+(E.aff&&E.aff.length?' · '+E.aff.map(a=>AFFN[a]).join(' · '):'')+'</div>'+
+ '<div class="rk-ename" style="margin-top:22px">'+E.name+'</div><div class="rk-esub" style="margin-top:-3px;margin-bottom:2px">Level '+E.lv+(E.boss?' · Guardian of the floor':E.chaser?' · The Chaser':'')+((E.boss||E.chaser||E.pk||!WCOL[E.cls])?'':' · <span style="color:'+WCOL[E.cls]+'">\u25cf '+CLASSES[E.cls].n+'</span>')+(E.aff&&E.aff.length?' · '+E.aff.map(a=>AFFN[a]).join(' · '):'')+'</div>'+
  '<div class="rk-bars"><div class="rkbar hp" id="rkehp"><i></i><span></span></div><div class="rkbar pz" id="rkepz"><i></i></div><div class="rkbar ag" id="rkeag"><i></i></div></div>'+
  '<div class="rk-fx" id="rkfx"></div></div>'+
  '<div class="rk-feed" id="rkfeed"></div>'+
@@ -933,7 +936,7 @@ function rkHit(u,sk,t,extra,auto){
  const N=RB.e,C=CLASSES[u.cls];
  const sum=t.reduce((a,x)=>a+ust(u,x[0])*x[1],0)+u.atk*t.reduce((a,x)=>a+x[1],0);
  let d=sum*(C.st===t[0][0]?1.25:1)*(RACES[u.race].beats===E.race?1.1:1)*(u.hero&&has('dim')?.75:1)*(u.sick?.85:1)*(E.taken||1);
- d*=(1+.1*N.marks.length)*(N.rend>0?1.15:1)*(N.broken>0?TUNE.breakBonus:1);
+ d*=(1+.1*N.marks.length)*(N.rend>0?1.15:1)*(N.broken>0?TUNE.breakBonus:1)*(1+.2*affE(u.cls));
  if(!auto)d*=(1+u.oc)*(u.after>0?1.25:1);
  if(extra)d*=extra;
  d*=.93+Math.random()*.14;
@@ -1021,7 +1024,7 @@ function rkEnemyPick(){
 function rkLand(){
  const N=RB.e,a=N.atk;let T=N.tgt;if(!T||T.dead)T=N.tgt=rkTarget();
  N.left--;
- let raw=E.atk*rkEnr()*(.85+Math.random()*.3)*a.m*(CLASSES[T.cls].weak===E.cls?1.1:1);
+ let raw=E.atk*rkEnr()*(.85+Math.random()*.3)*a.m*(1-.2*affE(T.cls));
  raw-=T.arm+(fam()==='stone'?1:fam()==='water'?-1:0);raw=Math.max(1,raw);
  let d=Math.round(raw),how='hit',c=a.c;
  const pre=RB.units.length>1?T.name+' ':'';
@@ -1482,6 +1485,7 @@ function showHow(){
  '<p><b>Goal.</b> Descend through 10 biomes. Each ends with a boss. Beat the 10th boss to win the run. If your hero falls, the run ends.</p>'+
  '<p><b>The Atlas.</b> Each floor offers two rooms. Tap one to enter. The icon shows what waits inside: enemies, chests, events, rest, bosses. Rooms behind them are glimpses of what you could reach next. A red-X <b>Blocked</b> room has an event; the rooms behind it are blacked out.</p>'+
  '<p><b>Battle.</b> Your party fights on its own. Skill cards at the bottom spend <b>AP</b>, which fills over time. Tap a ready card to use it. With allies, tap a portrait to choose who commands. Break the foe\'s <b>Poise</b> bar to stagger it. The pause button freezes the fight; skills are locked while paused.</p>'+
+ '<p><b>Color wheel.</b> Fighter (red) beats Priest (yellow) beats Wizard (purple) beats Ranger (green) beats Fighter. Win the matchup: +20% damage dealt, 20% less taken. Lose it: the reverse. Bosses, Chasers and the Pale Knight are exempt.</p>'+
  '<p><b>Loot and levels.</b> Wins give XP and gear. Each level-up adds HP and attack. Rest rooms restore HP and cooldowns. Chests can hide mimics.</p>'+
  '<p><b>Dangers.</b> Poison drains HP in battle and per room walked, for 1 to 5 turns; a level-up cures it. Long fights enrage enemies, so finish them fast. Elites carry traits like Thorned, Frenzied or Venomous, shown under their name.</p>'+
  '<p><b>Bosses and Chasers.</b> A boss waits every 8 to 12 floors. As it nears, <b>Chaser</b> rooms appear: very hard fights with great rewards. Killing the boss removes the chasers.</p>'+
