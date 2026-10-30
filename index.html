@@ -263,7 +263,7 @@ const RACES={
  demon:{n:'Demon',beats:'angel',res:'Burn'}
 };
 const NAMES={human:['Wanda','Marek','Isolde','Corin','Maren','Aldric'],elf:['Aelindra','Thalion','Sylwen','Eryndor','Liriel','Caelum'],dwarf:['Borga','Durnik','Thrain','Helga','Kragan','Brunna'],beast:['Fang','Rukka','Ashmane','Skarn','Tuuli','Grim'],angel:['Seraphiel','Iriel','Orael','Uriela','Zadkiel','Auriel'],demon:['Malachar','Vexira','Zareth','Nyx','Azmodan','Lilith']};
-const BEATS={fighter:'priest',priest:'wizard',wizard:'ranger',ranger:'fighter'},WCOL={fighter:'#e0526b',priest:'#e6c84a',wizard:'#9a7ae0',ranger:'#5fb36a'};
+const BEATS={fighter:'priest',priest:'wizard',wizard:'ranger',ranger:'fighter'},WNAM={fighter:'Red',priest:'Yellow',wizard:'Purple',ranger:'Green'},WCOL={fighter:'#e0526b',priest:'#e6c84a',wizard:'#9a7ae0',ranger:'#5fb36a'};
 function aff(a,b){if(!BEATS[a]||!BEATS[b]||a===b)return 0;return BEATS[a]===b?1:BEATS[b]===a?-1:0}
 function affE(c){return(E.boss||E.chaser||E.pk)?0:aff(c,E.cls)}
 const CLASSES={
@@ -895,7 +895,7 @@ function rkBuild(){
  const U=RB.units;
  root.innerHTML='<div class="rk-hd"><span>FLOOR '+S.floor+'</span><span><button class="rkb rkpp" id="rkpa" aria-label="Pause">'+PAUSE_I+'</button><button class="rkb" id="rkgear">⚙</button></span></div>'+
  '<div class="rk-en" id="rken"><div class="rk-tel" id="rktel"></div><div class="rk-art" id="rkart"><i class="rk-ring" id="rkring"></i>'+(E.art?'<img alt="" style="max-width:200px;max-height:170px;width:auto;height:auto;margin:-18px 0;object-fit:contain;border:0;filter:'+((E.fl||'')+' '+TIERFX[E.tier||0]).trim()+'" src="'+BART[E.art]+'">':E.boss?ico('boss'):svg(E.g))+'</div>'+
- '<div class="rk-ename" style="margin-top:22px">'+E.name+'</div><div class="rk-esub" style="margin-top:-3px;margin-bottom:2px">Level '+E.lv+(E.boss?' · Guardian of the floor':E.chaser?' · The Chaser':'')+((E.boss||E.chaser||E.pk||!WCOL[E.cls])?'':' · <span style="color:'+WCOL[E.cls]+'">\u25cf '+CLASSES[E.cls].n+'</span>')+(E.aff&&E.aff.length?' · '+E.aff.map(a=>AFFN[a]).join(' · '):'')+'</div>'+
+ '<div class="rk-ename" style="margin-top:22px">'+E.name+'</div><div class="rk-esub" style="margin-top:-3px;margin-bottom:2px">Level '+E.lv+(E.boss?' · Guardian of the floor':E.chaser?' · The Chaser':'')+((E.boss||E.chaser||E.pk||!WCOL[E.cls])?'':' · <span style="color:'+WCOL[E.cls]+'">\u25cf '+WNAM[E.cls]+'</span>')+(E.aff&&E.aff.length?' · '+E.aff.map(a=>AFFN[a]).join(' · '):'')+'</div>'+
  '<div class="rk-bars"><div class="rkbar hp" id="rkehp"><i></i><span></span></div><div class="rkbar pz" id="rkepz"><i></i></div><div class="rkbar ag" id="rkeag"><i></i></div></div>'+
  '<div class="rk-fx" id="rkfx"></div></div>'+
  '<div class="rk-feed" id="rkfeed"></div>'+
