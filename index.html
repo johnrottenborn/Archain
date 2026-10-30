@@ -447,7 +447,7 @@ function showLoot(){
  const res=rows.map(r=>{const d=r[2]-r[1],c=d>.049?'#7fd48c':d<-.049?'#ef7a8a':'#9a97a8';return'<div class="lrw"><span>'+r[0]+'</span><span>'+r[1]+r[3]+' → <b style="color:'+c+'">'+r[2]+r[3]+'</b></span></div>'}).join('');
  const cards=draft.map((d,i)=>{const q=itemInfo(d);return'<button class="lcard'+(i===draft.sel?' on':'')+(draft.st[i]?' dn':'')+'" data-i="'+i+'" style="border-color:'+q.rar.c+'"><img alt="" src="'+q.icon+'"><span style="color:'+q.rar.c+'">'+q.name+'</span><em>'+(draft.st[i]===1?'Equipped':draft.st[i]===2?'Left':SLOTN[q.slot])+'</em></button>'}).join('');
  const who_=M.length>1?'<div class="lwho">'+M.map((m,i)=>'<button data-w="'+i+'" class="'+(i===who?'on':'')+'">'+m.name+'<em>'+CLASSES[m.cls].n+'</em></button>').join('')+'</div>':'';
- L.innerHTML='<h1>Spoils</h1><div class="lsub">'+(E&&E.name?E.name+' left something behind.':'You found treasure.')+' Equip it or leave it.</div><div class="lrow">'+cards+'</div><div class="lbody">'+who_+'<div class="lcmp">'+col(cn,'Equipped')+'<div class="lvs">vs</div>'+col(n,'Found')+'</div><div class="lres"><div class="lrt">'+h.name+' after equipping</div>'+res+'</div></div><div class="lacts"><button id="lq" class="go"><span class="t">Equip on '+h.name+'</span></button><button id="ll"><span class="t">Leave it</span></button></div>';
+ L.innerHTML='<h1>Spoils</h1><div class="lsub">'+(E&&E.name?E.name+' left something behind.':'You found treasure.')+' Compare it with your gear, then swap or keep.</div><div class="lrow">'+cards+'</div><div class="lbody">'+who_+'<div class="lcmp">'+col(cn,'Equipped')+'<div class="lvs">vs</div>'+col(n,'Found')+'</div><div class="lres"><div class="lrt">'+h.name+' after equipping</div>'+res+'</div></div><div class="lacts"><button id="lq" class="go"><span class="t">'+(cn?'Swap: equip on ':'Equip on ')+h.name+'</span></button><button id="ll"><span class="t">'+(cn?'Keep current gear':'Leave it')+'</span></button></div>';
  L.style.display='flex';
  L.querySelectorAll('.lcard').forEach(b=>b.onclick=()=>{draft.sel=+b.dataset.i;showLoot()});
  L.querySelectorAll('.lwho button').forEach(b=>b.onclick=()=>{draft.who=+b.dataset.w;showLoot()});
@@ -1283,7 +1283,7 @@ function win(){
  (S.party||[]).forEach(a=>{if(a.hp<=0)a.hp=Math.ceil(a.max*.3)});const vic=RACES[S.race].vic;
  if(vic){const h=Math.round(S.max*vic);S.hp=Math.min(S.max,S.hp+h);log('Grave-touched: you reclaim '+h+' HP.','heal')}
  lootSource='kill';draft=null;
- if(!E.boss&&!E.chaser&&!E.mimic&&!E.snail&&Math.random()>=[.32,.36,.40,.44,.48,.52][Math.min(5,E.tier||0)]){E.hp=0;log('Nothing of worth is left behind.','story');next();return}
+ if(!E.boss&&!E.chaser&&!E.mimic&&!E.snail&&Math.random()>=[.8,.82,.85,.88,.9,.92][Math.min(5,E.tier||0)]){E.hp=0;log('Nothing of worth is left behind.','story');next();return}
  {const t=E.tier||0,cnt=E.chaser?3:(E.boss||E.snail)?2:1;draft=[];for(let i=0;i<cnt;i++)draft.push(rollItem(E.boss?t+3:E.chaser?6:E.snail?5:t,E.chaser?2:(E.boss||E.snail)?1:0,E.chaser?.2:E.boss?.08:0))}
  if(E.boss){S.lastBoss=S.floor;S.bossAt=RR(8,12);S.bosses=(S.bosses||0)+1;cur.k=null;stripCh(choices||[]);(S.pool||[]).forEach(r=>{r.m=r.m.filter(k=>k!=='xc');if(!r.m.length)r.m.push('tn');if(r.k)stripCh(r.k)});const sb=a=>a.forEach(n=>{n.m=n.m.filter(k=>!/^b[emh]$/.test(k));if(!n.m.length)n.m.push('tn');if(n.k)sb(n.k)});sb(choices||[]);sb(S.pool||[]);log('The thing that hunted you loses your scent. The next stretch of the dark is yours.','story')}
  if(E.boss&&S.bosses>=10){E.hp=0;return setTimeout(victory,900)}
